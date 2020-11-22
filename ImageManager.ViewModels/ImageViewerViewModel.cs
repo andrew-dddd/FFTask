@@ -12,7 +12,6 @@ namespace ImageManager.ViewModels
         private CreditsEntry _currentCredits;
         private string _currentFileName;
         private int _currentFileIndex;
-        private string currentImageFullName = "";
         private bool _galleryLoader;
         private bool _galleryHasImages;
         private readonly IGalleryManager _galleryManager;
@@ -38,7 +37,7 @@ namespace ImageManager.ViewModels
         public CreditsEntry CurrentCredits
         {
             get => _currentCredits;
-            private set
+            internal set
             {
                 _currentCredits = value;
                 RaisePropertyChanged();
@@ -48,7 +47,7 @@ namespace ImageManager.ViewModels
         public GalleryImageInfo CurrentImage
         {
             get => _currentImage;
-            private set
+            internal set
             {
                 _currentImage = value;
                 RaisePropertyChanged();
@@ -58,19 +57,9 @@ namespace ImageManager.ViewModels
         public string CurrentImageName
         {
             get => _currentFileName;
-            set
+            internal set
             {
                 _currentFileName = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        public string CurrentImageFullName
-        {
-            get => currentImageFullName;
-            private set
-            {
-                currentImageFullName = value;
                 RaisePropertyChanged();
             }
         }
@@ -78,7 +67,7 @@ namespace ImageManager.ViewModels
         public int CurrentImageIndex
         {
             get => _currentFileIndex;
-            private set
+            internal set
             {
                 _currentFileIndex = value;
                 RaisePropertyChanged();
@@ -88,7 +77,7 @@ namespace ImageManager.ViewModels
         public bool GalleryLoaded
         {
             get => _galleryLoader;
-            set
+            internal set
             {
                 _galleryLoader = value;
                 RaisePropertyChanged();
@@ -98,20 +87,30 @@ namespace ImageManager.ViewModels
         public bool GalleryHasImages
         {
             get => _galleryHasImages;
-            private set
+            internal set
             {
                 _galleryHasImages = value;
                 RaisePropertyChanged();
             }
         }
 
-        public void FirstImage() => SetCurrentFile(0);
+        public ImageGallery ImageGallery
+        {
+            get => _imageGallery;
+            internal set
+            {
+                _imageGallery = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public void PreviousImage() => SetCurrentFile(CurrentImageIndex - 1);
+        public void FirstImage() => TryExecute(() => SetCurrentFile(0));
 
-        public void NextImage() => SetCurrentFile(CurrentImageIndex + 1);
+        public void PreviousImage() => TryExecute(() => SetCurrentFile(CurrentImageIndex - 1));
 
-        public void LastImage() => SetCurrentFile(_imageGallery.Count - 1);
+        public void NextImage() => TryExecute(() => SetCurrentFile(CurrentImageIndex + 1));
+
+        public void LastImage() => TryExecute(() => SetCurrentFile(_imageGallery.Count - 1));
 
         public void InitializeGallery() => TryExecute(() =>
         {
@@ -128,6 +127,14 @@ namespace ImageManager.ViewModels
             if (_confirmationService.Confirm("Are you sure you want to wipe gallery? This will remove all images permanently."))
             {
                 _galleryManager.WipeGallery(_imageGallery);
+                GalleryLoaded = false;
+                GalleryHasImages = false;
+                ImageGallery = null;
+
+                CurrentCredits = null;
+                CurrentImage = null;
+                CurrentImageName = null;
+                CurrentImageIndex = 0;
             }
         });
 
@@ -136,7 +143,9 @@ namespace ImageManager.ViewModels
             if (!GalleryLoaded) throw new ImageManagerException("Open gallery first");
             if (_confirmationService.Confirm($"Are you sure you want to remove '{CurrentImageName}'? This operation is permanent."))
             {
-                _galleryManager.RemoveFile(_imageGallery, CurrentImageIndex);
+                _galleryManager.RemoveImage(_imageGallery, CurrentImageIndex);
+                var gallery = _galleryManager.OpenGallery(_imageGallery.FullName);
+                LoadGallery(gallery);
             }
         });
 
@@ -147,22 +156,33 @@ namespace ImageManager.ViewModels
             if (newImageInfo != null)
             {
                 _galleryManager.AddImage(_imageGallery, newImageInfo);
+                var gallery = _galleryManager.OpenGallery(_imageGallery.FullName);
+                LoadGallery(gallery);
             }
         });
 
         public void OpenGallery() => TryExecute(() =>
         {
             var galleryDirectoryPath = _directoryPathProvider.GetDirectoryPath();
-            _imageGallery = _galleryManager.OpenGallery(galleryDirectoryPath);
-            GalleryLoaded = true;
-            if (!_imageGallery.IsEmptyGallery)
+            if (galleryDirectoryPath != null)
             {
-                FirstImage();
-                GalleryHasImages = true;
+                var gallery = _galleryManager.OpenGallery(galleryDirectoryPath);
+                LoadGallery(gallery);
             }
         });
 
-        private void SetCurrentFile(int fileIndex) => TryExecute(() =>
+        internal virtual void LoadGallery(ImageGallery imageGallery)
+        {
+            _imageGallery = imageGallery;
+            GalleryLoaded = true;
+            if (!_imageGallery.IsEmptyGallery)
+            {
+                GalleryHasImages = true;
+                FirstImage();
+            }
+        }
+
+        private void SetCurrentFile(int fileIndex)
         {
             if (_imageGallery == null) throw new ImageManagerException("No loaded gallery");
             if (GalleryHasImages == false) throw new ImageManagerException("Gallery is empty");
@@ -170,13 +190,13 @@ namespace ImageManager.ViewModels
             if (fileIndex >= _imageGallery.Count) fileIndex = 0;
             if (fileIndex < 0) fileIndex = _imageGallery.Count - 1;
 
-            var unsampleFile = _imageGallery.GalleryFiles[CurrentImageIndex];
+            var unsampleFile = _imageGallery.GalleryFiles[fileIndex];
 
             CurrentImageIndex = fileIndex;
             CurrentImageName = unsampleFile.Name;
             CurrentImage = unsampleFile;
-            CurrentCredits = unsampleFile.FileCredits;
-        });
+            CurrentCredits = unsampleFile.Credits;
+        }
 
         private void TryExecute(Action action)
         {

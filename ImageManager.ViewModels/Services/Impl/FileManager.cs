@@ -46,7 +46,7 @@ namespace ImageManager.ViewModels.Services.Impl
                 return;
             }
 
-            var creditsDictionary = existingImages.ToDictionary(x => x.OriginalFileName, x => x.FileCredits);
+            var creditsDictionary = existingImages.ToDictionary(x => x.OriginalFileName, x => x.Credits);
             var creditsJson = JsonConvert.SerializeObject(creditsDictionary, Formatting.Indented);
             File.WriteAllText(creditsPath, creditsJson);
         }

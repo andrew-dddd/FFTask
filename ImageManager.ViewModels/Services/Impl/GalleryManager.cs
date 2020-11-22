@@ -15,6 +15,9 @@ namespace ImageManager.ViewModels.Services.Impl
 
         public void WipeGallery(ImageGallery imageGallery)
         {
+            CheckIfTargetDirExist(imageGallery.FullName);
+            CheckIfIsGalleryDirectory(imageGallery.FullName);
+
             foreach (var galleryFile in imageGallery.GalleryFiles)
             {
                 _fileManager.RemoveFile(galleryFile.FullName);
@@ -24,27 +27,30 @@ namespace ImageManager.ViewModels.Services.Impl
 
         public void InitializeGallery(string galleryDirectoryPath)
         {
-            if (!_fileManager.DirectoryExists(galleryDirectoryPath)) throw new ImageManagerException("Target directory does not exist");
-            if (_fileManager.IsGalleryDirectory(galleryDirectoryPath)) throw new ImageManagerException("This is already gallery directory");
+            CheckIfTargetDirExist(galleryDirectoryPath);
+            if (_fileManager.IsGalleryDirectory(galleryDirectoryPath)) throw new ImageManagerException("Already a gallery directory.");
+
             _fileManager.InitializeGallery(galleryDirectoryPath);
         }
 
         public ImageGallery OpenGallery(string galleryDirectoryPath)
         {
-            if (!_fileManager.DirectoryExists(galleryDirectoryPath)) throw new ImageManagerException("Target directory does not exist");
-            if (!_fileManager.IsGalleryDirectory(galleryDirectoryPath)) throw new ImageManagerException("Not a gallery directory.");
+            CheckIfTargetDirExist(galleryDirectoryPath);
+            CheckIfIsGalleryDirectory(galleryDirectoryPath);
 
-            var unsampleFilesDictionary = _fileManager.ReadGalleryFiles(galleryDirectoryPath);
-
-            var unsampleFiles = unsampleFilesDictionary
+            var galleryFiles = _fileManager.ReadGalleryFiles(galleryDirectoryPath)
                 .Select(x => Create(galleryDirectoryPath, x.Key, x.Value))
                 .ToList();
 
-            return new ImageGallery(galleryDirectoryPath, unsampleFiles);
+            return new ImageGallery(galleryDirectoryPath, galleryFiles);
         }
 
-        public void RemoveFile(ImageGallery imageGallery, int currentImageIndex)
+        public void RemoveImage(ImageGallery imageGallery, int currentImageIndex)
         {
+            CheckIfTargetDirExist(imageGallery.FullName);
+            CheckIfIsGalleryDirectory(imageGallery.FullName);
+            if (imageGallery.Count == 0) throw new ImageManagerException("Gallery is empty");
+
             var currentImage = imageGallery.GalleryFiles[currentImageIndex];
             _fileManager.RemoveFile(currentImage.FullName);
             var existingImages = imageGallery.GalleryFiles.Where(x => x != currentImage).ToList();
@@ -53,11 +59,24 @@ namespace ImageManager.ViewModels.Services.Impl
 
         public void AddImage(ImageGallery imageGallery, NewImageInfo newImageInfo)
         {
+            CheckIfTargetDirExist(imageGallery.FullName);
+            CheckIfIsGalleryDirectory(imageGallery.FullName);
+
             var existingFileList = imageGallery.GalleryFiles.ToList();
             var newGalleryFileInfo = CreateGalleryFileInfo(newImageInfo);
             existingFileList.Add(newGalleryFileInfo);
             _fileManager.CopyFileToGallery(imageGallery.FullName, newGalleryFileInfo);
             _fileManager.WriteGalleryFile(imageGallery.FullName, existingFileList);
+        }
+
+        internal virtual void CheckIfTargetDirExist(string galleryDirectoryPath)
+        {
+            if (!_fileManager.DirectoryExists(galleryDirectoryPath)) throw new ImageManagerException("Target directory does not exist");
+        }
+
+        internal virtual void CheckIfIsGalleryDirectory(string galleryDirectoryPath)
+        {
+            if (!_fileManager.IsGalleryDirectory(galleryDirectoryPath)) throw new ImageManagerException("This is already gallery directory");
         }
 
         private GalleryImageInfo CreateGalleryFileInfo(NewImageInfo newImageInfo)

@@ -7,7 +7,7 @@ namespace ImageManager.ViewModels.Services
         void WipeGallery(ImageGallery imageGallery);
         void InitializeGallery(string galleryDirectoryPath);
         ImageGallery OpenGallery(string galleryDirectoryPath);
-        void RemoveFile(ImageGallery imageGallery, int currentImageIndex);
+        void RemoveImage(ImageGallery imageGallery, int currentImageIndex);
         void AddImage(ImageGallery imageGallery, NewImageInfo newImageInfo);
     }
 }

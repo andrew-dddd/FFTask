@@ -10,7 +10,7 @@ namespace ImageManager.ViewModels.Models
             Name = Path.GetFileName(fullName);
             Exists = exists;
             OriginalFileName = Path.GetFileNameWithoutExtension(fullName);
-            FileCredits = fileCredits;
+            Credits = fileCredits;
         }        
 
         /// <summary>
@@ -36,6 +36,6 @@ namespace ImageManager.ViewModels.Models
         /// <summary>
         /// File credits.
         /// </summary>
-        public CreditsEntry FileCredits { get; }
+        public CreditsEntry Credits { get; }
     }
 }
