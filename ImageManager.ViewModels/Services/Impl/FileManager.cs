@@ -8,7 +8,7 @@ namespace ImageManager.ViewModels.Services.Impl
 {
     internal class FileManager : IFileManager
     {
-        private const string CreditsJsonFileName = "__credits.json";
+        private const string CreditsJsonFileName = "__gallery.json";
 
         public void InitializeGallery(string galleryDirectoryPath)
         {
@@ -25,8 +25,8 @@ namespace ImageManager.ViewModels.Services.Impl
         }
 
         public Dictionary<string, CreditsEntry> ReadGalleryFiles(string galleryDirectoryPath)
-        {   
-            var creditsFile = new FileInfo(GetCreditsJsonFilePath(galleryDirectoryPath));            
+        {
+            var creditsFile = new FileInfo(GetGalleryJsonFile(galleryDirectoryPath));
             var creditsFileJsonString = File.ReadAllText(creditsFile.FullName);
             return JsonConvert.DeserializeObject<Dictionary<string, CreditsEntry>>(creditsFileJsonString);
         }
@@ -37,9 +37,15 @@ namespace ImageManager.ViewModels.Services.Impl
             File.Delete(removedFileName);
         }
 
-        public void WriteCreditsFile(string galleryDirectoryPath, List<GalleryImageInfo> existingImages)
+        public void WriteGalleryFile(string galleryDirectoryPath, List<GalleryImageInfo> existingImages)
         {
-            var creditsPath = GetCreditsJsonFilePath(galleryDirectoryPath);
+            var creditsPath = GetGalleryJsonFile(galleryDirectoryPath);
+            if (existingImages.Count == 0)
+            {
+                File.WriteAllText(creditsPath, "{}");
+                return;
+            }
+
             var creditsDictionary = existingImages.ToDictionary(x => x.OriginalFileName, x => x.FileCredits);
             var creditsJson = JsonConvert.SerializeObject(creditsDictionary, Formatting.Indented);
             File.WriteAllText(creditsPath, creditsJson);
@@ -49,11 +55,11 @@ namespace ImageManager.ViewModels.Services.Impl
 
         public bool IsGalleryDirectory(string galleryDirectoryPath)
         {
-            return File.Exists(GetCreditsJsonFilePath(galleryDirectoryPath));
+            return File.Exists(GetGalleryJsonFile(galleryDirectoryPath));
         }
 
         public bool DirectoryExists(string directory) => Directory.Exists(directory);
 
-        private static string GetCreditsJsonFilePath(string galleryDirectoryPath) => Path.Combine(galleryDirectoryPath, CreditsJsonFileName);
+        private static string GetGalleryJsonFile(string galleryDirectoryPath) => Path.Combine(galleryDirectoryPath, CreditsJsonFileName);
     }
 }

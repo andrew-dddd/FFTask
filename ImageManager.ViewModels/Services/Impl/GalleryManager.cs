@@ -48,7 +48,7 @@ namespace ImageManager.ViewModels.Services.Impl
             var currentImage = imageGallery.GalleryFiles[currentImageIndex];
             _fileManager.RemoveFile(currentImage.FullName);
             var existingImages = imageGallery.GalleryFiles.Where(x => x != currentImage).ToList();
-            _fileManager.WriteCreditsFile(imageGallery.FullName, existingImages);
+            _fileManager.WriteGalleryFile(imageGallery.FullName, existingImages);
         }
 
         public void AddImage(ImageGallery imageGallery, NewImageInfo newImageInfo)
@@ -57,7 +57,7 @@ namespace ImageManager.ViewModels.Services.Impl
             var newGalleryFileInfo = CreateGalleryFileInfo(newImageInfo);
             existingFileList.Add(newGalleryFileInfo);
             _fileManager.CopyFileToGallery(imageGallery.FullName, newGalleryFileInfo);
-            _fileManager.WriteCreditsFile(imageGallery.FullName, existingFileList);
+            _fileManager.WriteGalleryFile(imageGallery.FullName, existingFileList);
         }
 
         private GalleryImageInfo CreateGalleryFileInfo(NewImageInfo newImageInfo)
