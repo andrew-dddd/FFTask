@@ -71,12 +71,12 @@ namespace ImageManager.ViewModels.Services.Impl
 
         internal virtual void CheckIfTargetDirExist(string galleryDirectoryPath)
         {
-            if (!_fileManager.DirectoryExists(galleryDirectoryPath)) throw new ImageManagerException("Target directory does not exist");
+            if (!_fileManager.DirectoryExists(galleryDirectoryPath)) throw new ImageManagerException($"Directory '{galleryDirectoryPath.Split('\\').LastOrDefault()}' does not exist");
         }
 
         internal virtual void CheckIfIsGalleryDirectory(string galleryDirectoryPath)
         {
-            if (!_fileManager.IsGalleryDirectory(galleryDirectoryPath)) throw new ImageManagerException("This is already gallery directory");
+            if (!_fileManager.IsGalleryDirectory(galleryDirectoryPath)) throw new ImageManagerException($"Directory '{galleryDirectoryPath.Split('\\').LastOrDefault()}' is not gallery directory");
         }
 
         private GalleryImageInfo CreateGalleryFileInfo(NewImageInfo newImageInfo)

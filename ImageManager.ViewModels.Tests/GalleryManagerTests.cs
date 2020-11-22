@@ -176,6 +176,30 @@ namespace ImageManager.ViewModels.Tests
                 _fileManager.WriteGalleryFile("test gallery", Arg.Is<List<GalleryImageInfo>>(x => x.Count == 1));
             });
         }
+
+        [Fact]
+        public void CheckIfTargetDirExist_ShouldThrow_WhenTargetDirDoesNotExist()
+        {
+            // Arrange
+            _galleryManager.WhenForAnyArgs(x => x.CheckIfTargetDirExist(default)).CallBase();
+            _fileManager.DirectoryExists(Arg.Any<string>()).Returns(false);
+
+            // Act
+            var ex = Assert.Throws<ImageManagerException>(() => _galleryManager.CheckIfTargetDirExist("C:\\test"));
+            ex.Message.Should().Be("Directory 'test' does not exist");
+        }
+
+        [Fact]
+        public void CheckIfIsGalleryDirectory_ShouldThrow_WhenTargetDirDoesNotExist()
+        {
+            // Arrange
+            _galleryManager.WhenForAnyArgs(x => x.CheckIfIsGalleryDirectory(default)).CallBase();
+            _fileManager.IsGalleryDirectory(Arg.Any<string>()).Returns(false);
+
+            // Act
+            var ex = Assert.Throws<ImageManagerException>(() => _galleryManager.CheckIfIsGalleryDirectory("C:\\test"));
+            ex.Message.Should().Be("Directory 'test' is not gallery directory");
+        }
     }
 }
 
