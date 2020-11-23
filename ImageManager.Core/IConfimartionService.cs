@@ -1,4 +1,4 @@
-﻿namespace ImageManager.ViewModels.Services
+﻿namespace ImageManager.Core
 {
     public interface IConfirmationService
     {

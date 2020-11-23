@@ -1,5 +1,4 @@
-﻿using ImageManager.ViewModels;
-using ImageManager.ViewModels.Services;
+﻿using ImageManager.Core;
 using System;
 using System.Windows;
 using System.Windows.Media.Imaging;

@@ -1,12 +1,12 @@
 using FluentAssertions;
-using ImageManager.ViewModels.Models;
-using ImageManager.ViewModels.Services;
+using ImageManager.Core;
+using ImageManager.Core.Models;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace ImageManager.ViewModels.Tests
+namespace ImageManager.Tests
 {
     public class ImageViewerViewModelTests
     {

@@ -1,10 +1,10 @@
-﻿using ImageManager.ViewModels.Models;
+﻿using ImageManager.Core.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace ImageManager.ViewModels.Services.Impl
+namespace ImageManager.Core.Impl
 {
     internal class FileManager : IFileManager
     {

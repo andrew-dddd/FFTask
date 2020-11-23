@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace ImageManager.ViewModels
+namespace ImageManager.Core
 {
-    internal class ImageManagerException : Exception
+    public sealed class ImageManagerException : Exception
     {
         public ImageManagerException()
         {

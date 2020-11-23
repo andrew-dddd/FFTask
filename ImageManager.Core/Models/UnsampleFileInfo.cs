@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace ImageManager.ViewModels.Models
+namespace ImageManager.Core.Models
 {
     public sealed class GalleryImageInfo
     {

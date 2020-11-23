@@ -12,7 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\ImageManager.ViewModels\ImageManager.ViewModels.csproj" />
+	  <ProjectReference Include="..\ImageManager.Core\ImageManager.Core.csproj" />
 	</ItemGroup>
 
 </Project>

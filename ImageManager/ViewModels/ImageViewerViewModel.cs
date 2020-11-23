@@ -1,9 +1,9 @@
 ﻿using GalaSoft.MvvmLight;
-using ImageManager.ViewModels.Models;
-using ImageManager.ViewModels.Services;
+using ImageManager.Core.Models;
+using ImageManager.Core;
 using System;
 
-namespace ImageManager.ViewModels
+namespace ImageManager.Core
 {
     public class ImageViewerViewModel : ViewModelBase
     {

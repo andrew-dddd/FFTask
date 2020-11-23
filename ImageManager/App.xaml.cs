@@ -1,4 +1,4 @@
-﻿using ImageManager.ViewModels;
+﻿using ImageManager.Core;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Windows;
@@ -17,7 +17,7 @@ namespace ImageManager
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddImageManagerCommons();
-            serviceCollection.AddViewModels();
+            serviceCollection.AddImageManagerCore();
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
         }

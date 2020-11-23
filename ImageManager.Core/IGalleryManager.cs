@@ -1,6 +1,6 @@
-﻿using ImageManager.ViewModels.Models;
+﻿using ImageManager.Core.Models;
 
-namespace ImageManager.ViewModels.Services
+namespace ImageManager.Core
 {
     public interface IGalleryManager
     {

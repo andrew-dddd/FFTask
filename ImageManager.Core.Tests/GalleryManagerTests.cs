@@ -1,13 +1,12 @@
 ﻿using FluentAssertions;
-using ImageManager.ViewModels.Models;
-using ImageManager.ViewModels.Services;
-using ImageManager.ViewModels.Services.Impl;
+using ImageManager.Core.Models;
+using ImageManager.Core.Impl;
 using NSubstitute;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace ImageManager.ViewModels.Tests
+namespace ImageManager.Core.Tests
 {
     public class GalleryManagerTests
     {

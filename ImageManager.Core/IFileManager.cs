@@ -1,7 +1,7 @@
-﻿using ImageManager.ViewModels.Models;
+﻿using ImageManager.Core.Models;
 using System.Collections.Generic;
 
-namespace ImageManager.ViewModels.Services
+namespace ImageManager.Core
 {
     public interface IFileManager
     {

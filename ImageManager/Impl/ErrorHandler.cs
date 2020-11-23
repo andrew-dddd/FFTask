@@ -1,4 +1,4 @@
-﻿using ImageManager.ViewModels.Services;
+﻿using ImageManager.Core;
 using System.Windows;
 
 namespace ImageManager.Impl
