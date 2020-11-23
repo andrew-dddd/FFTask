@@ -28,36 +28,48 @@ namespace ImageManager
             }
         }
 
-        ImageViewerViewModel ViewModel => DataContext as ImageViewerViewModel;
+        public ImageViewerViewModel ViewModel => DataContext as ImageViewerViewModel;
 
-        private void OpenImage_Button_Click(object sender, RoutedEventArgs e) => ViewModel.OpenGallery();
+        internal void OpenImage_Button_Click(object sender, RoutedEventArgs e) => ViewModel.OpenGallery();
 
-        private void First_Click(object sender, RoutedEventArgs e) => ViewModel.FirstImage();
+        internal void First_Click(object sender, RoutedEventArgs e) => ViewModel.FirstImage();
 
-        private void Previous_Click(object sender, RoutedEventArgs e) => ViewModel.PreviousImage();
+        internal void Previous_Click(object sender, RoutedEventArgs e) => ViewModel.PreviousImage();
 
-        private void Next_Click(object sender, RoutedEventArgs e) => ViewModel.NextImage();
+        internal void Next_Click(object sender, RoutedEventArgs e) => ViewModel.NextImage();
 
-        private void Last_Click(object sender, RoutedEventArgs e) => ViewModel.LastImage();
+        internal void Last_Click(object sender, RoutedEventArgs e) => ViewModel.LastImage();
+
+        internal void AddImage_Button_Click(object sender, RoutedEventArgs e) => ViewModel.AddImage();
+
+        internal void RemoveImage_Button_Click(object sender, RoutedEventArgs e) => ViewModel.RemoveImage();
+
+        internal void CreateGallery_Button_Click(object sender, RoutedEventArgs e) => ViewModel.InitializeGallery();
 
         private void SetImage()
         {
             try
             {
-                BitmapImage image = new BitmapImage();
-                image.BeginInit();
-                image.UriSource = new Uri(ViewModel.CurrentImage.FullName);
-                image.EndInit();
-                ImageControl.Source = image;
+                if (ViewModel.CurrentImage == null)
+                {
+                    ImageControl.Source = null;
+                }
+                else
+                {
+                    BitmapImage image = new BitmapImage();
+                    image.BeginInit();
+                    image.UriSource = new Uri(ViewModel.CurrentImage.FullName);
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.EndInit();
+                    ImageControl.Source = image;
+                }
             }
             catch (Exception ex)
             {
-                errorHandler.ShowUnexpectedError(ex.Message);
+                errorHandler.ShowUnexpectedError(ex);
             }
         }
 
-        private void AddImage_Button_Click(object sender, RoutedEventArgs e) => ViewModel.AddImage();
-
-        private void RemoveImage_Button_Click(object sender, RoutedEventArgs e) => ViewModel.RemoveImage();
+        internal void DestroyGallery_Button_Click(object sender, RoutedEventArgs e) => ViewModel.DestroyGallery();
     }
 }

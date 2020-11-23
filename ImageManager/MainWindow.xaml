@@ -21,15 +21,19 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Grid.Row="0" Grid.Column="0" Margin="1" Content="Open folder" Name="OpenImage_Button" Click="OpenImage_Button_Click"></Button>
-            <Button Grid.Row="0" Grid.Column="1" Margin="1" IsEnabled="{Binding Path=GalleryLoaded}" Content="Add image" Name="AddImage_Button" Click="AddImage_Button_Click"></Button>
-            <Button Grid.Row="0" Grid.Column="2" Margin="1" IsEnabled="{Binding Path=GalleryLoaded}" Content="Remove image" Name="RemoveImage_Button" Click="RemoveImage_Button_Click"></Button>
+            <Button Grid.Row="0" Grid.Column="0" Margin="1" Content="Open gallery" Name="OpenImage_Button" Click="OpenImage_Button_Click"></Button>
+            <Button Grid.Row="0" Grid.Column="1" Margin="1" Content="Create new gallery" Name="CreateGallery_Button" Click="CreateGallery_Button_Click"></Button>
+            <Button Grid.Row="0" Grid.Column="2" Margin="1" IsEnabled="{Binding Path=GalleryLoaded}" Content="Destroy gallery" Name="DestroyGallery_Button" Click="DestroyGallery_Button_Click"></Button>
+            <Button Grid.Row="0" Grid.Column="3" Margin="1" IsEnabled="{Binding Path=GalleryLoaded}" Content="Add image" Name="AddImage_Button" Click="AddImage_Button_Click"></Button>
+            <Button Grid.Row="0" Grid.Column="4" Margin="1" IsEnabled="{Binding Path=GalleryLoaded}" Content="Remove image" Name="RemoveImage_Button" Click="RemoveImage_Button_Click"></Button>
         </Grid>
         <Image Name="ImageControl" Grid.Column="1" Grid.Row="1">
         </Image>
         <Grid Grid.Row="2">
-            <TextBox VerticalAlignment="Center" Text="{Binding Path=CurrentFileName, Mode=OneWay}"></TextBox>
+            <Label VerticalContentAlignment="Center" Content="{Binding Path=CurrentImageName, Mode=OneWay}"></Label>
         </Grid>
         <Grid Grid.Row="3" Grid.Column="1">
             <Grid.ColumnDefinitions>
@@ -38,10 +42,10 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" IsEnabled="{Binding Path=GalleryLoaded}" Name="First" Content="First" Click="First_Click"></Button>
-            <Button Grid.Column="1" IsEnabled="{Binding Path=GalleryLoaded}" Name="Previous" Content="Previous" Click="Previous_Click"></Button>
-            <Button Grid.Column="2" IsEnabled="{Binding Path=GalleryLoaded}" Name="Next" Content="Next" Click="Next_Click"></Button>
-            <Button Grid.Column="3" IsEnabled="{Binding Path=GalleryLoaded}" Name="Last" Content="Last" Click="Last_Click"></Button>
+            <Button Grid.Column="0" IsEnabled="{Binding Path=GalleryHasImages}" Name="First" Content="First" Click="First_Click"></Button>
+            <Button Grid.Column="1" IsEnabled="{Binding Path=GalleryHasImages}" Name="Previous" Content="Previous" Click="Previous_Click"></Button>
+            <Button Grid.Column="2" IsEnabled="{Binding Path=GalleryHasImages}" Name="Next" Content="Next" Click="Next_Click"></Button>
+            <Button Grid.Column="3" IsEnabled="{Binding Path=GalleryHasImages}" Name="Last" Content="Last" Click="Last_Click"></Button>
         </Grid>
     </Grid>
 </Window>

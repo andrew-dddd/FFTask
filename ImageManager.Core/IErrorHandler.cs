@@ -1,9 +1,11 @@
-﻿namespace ImageManager.Core
+﻿using System;
+
+namespace ImageManager.Core
 {
     public interface IErrorHandler
     {
-        void ShowError(string message);
+        void ShowError(Exception exception);
 
-        void ShowUnexpectedError(string message);
+        void ShowUnexpectedError(Exception exception);
     }
 }

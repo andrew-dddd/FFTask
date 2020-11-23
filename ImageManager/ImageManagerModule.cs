@@ -13,6 +13,8 @@ namespace ImageManager
         {
             services.AddScoped<IErrorHandler, Impl.ErrorHandler>();
             services.AddScoped<IDirectoryPathProvider, Impl.DirectoryPathProvider>();
+            services.AddScoped<IConfirmationService, Impl.ConfirmationService>();
+            services.AddScoped<INewImageDataProvider, Impl.NewImageDataProvider>();
             services.AddScoped<ImageViewerViewModel>();
             services.AddScoped<MainWindow>();
             return services;

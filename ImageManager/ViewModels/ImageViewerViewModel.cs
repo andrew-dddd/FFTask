@@ -118,10 +118,12 @@ namespace ImageManager.Core
             if (string.IsNullOrEmpty(path) == false)
             {
                 _galleryManager.InitializeGallery(path);
+                var gallery = _galleryManager.OpenGallery(path);
+                LoadGallery(gallery);
             }
         });
 
-        public void WipeGallery() => TryExecute(() =>
+        public void DestroyGallery() => TryExecute(() =>
         {
             if (!GalleryLoaded) throw new ImageManagerException("Open gallery first");
             if (_confirmationService.Confirm("Are you sure you want to wipe gallery? This will remove all images permanently."))
@@ -143,6 +145,7 @@ namespace ImageManager.Core
             if (!GalleryLoaded) throw new ImageManagerException("Open gallery first");
             if (_confirmationService.Confirm($"Are you sure you want to remove '{CurrentImageName}'? This operation is permanent."))
             {
+                CurrentImage = null;
                 _galleryManager.RemoveImage(_imageGallery, CurrentImageIndex);
                 var gallery = _galleryManager.OpenGallery(_imageGallery.FullName);
                 LoadGallery(gallery);
@@ -207,11 +210,11 @@ namespace ImageManager.Core
             }
             catch (ImageManagerException ex)
             {
-                _errorHandler.ShowError(ex.Message);
+                _errorHandler.ShowError(ex);
             }
             catch (Exception e)
             {
-                _errorHandler.ShowUnexpectedError(e.Message);
+                _errorHandler.ShowUnexpectedError(e);
             }
         }
     }

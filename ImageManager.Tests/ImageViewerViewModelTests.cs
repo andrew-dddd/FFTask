@@ -73,13 +73,13 @@ namespace ImageManager.Tests
         public void OpenGallery_ShouldShowMessage_ForImageViewerException()
         {
             // Arrange
-            _galleryManager.OpenGallery(Arg.Any<string>()).ReturnsForAnyArgs(x => throw new ImageManagerException("test message"));            
+            _galleryManager.OpenGallery(Arg.Any<string>()).ReturnsForAnyArgs(x => throw new ImageManagerException("test message"));
 
             // Act
             _viewModel.OpenGallery();
 
             // Assert
-            _errorHandlerMock.Received(1).ShowError("test message");
+            _errorHandlerMock.Received(1).ShowError(Arg.Is<Exception>(x => x.Message == "test message"));
         }
 
         [Fact]
@@ -92,7 +92,7 @@ namespace ImageManager.Tests
             _viewModel.OpenGallery();
 
             // Assert
-            _errorHandlerMock.Received(1).ShowUnexpectedError("test message");
+            _errorHandlerMock.Received(1).ShowUnexpectedError(Arg.Is<Exception>(x => x.Message == "test message"));
         }
 
         [Fact]
@@ -100,12 +100,15 @@ namespace ImageManager.Tests
         {
             // Arrange
             _directoryPathProviderMock.GetDirectoryPath().Returns("path");
+            _viewModel.WhenForAnyArgs(x => x.LoadGallery(default)).DoNotCallBase();
 
             // Act
             _viewModel.InitializeGallery();
 
             // Assert
             _galleryManager.Received(1).InitializeGallery("path");
+            _galleryManager.Received(1).OpenGallery("path");
+            _viewModel.Received(1).LoadGallery(Arg.Any<ImageGallery>());
         }
 
         [Theory]
@@ -131,7 +134,7 @@ namespace ImageManager.Tests
             _confirmationServiceMock.Confirm(Arg.Any<string>()).Returns(true);
 
             // Act
-            _viewModel.WipeGallery();
+            _viewModel.DestroyGallery();
 
             // Aassert
             _galleryManager.Received(1).WipeGallery(Arg.Any<ImageGallery>());
@@ -157,12 +160,12 @@ namespace ImageManager.Tests
             _viewModel.GalleryLoaded = false;
 
             // Act
-            _viewModel.WipeGallery();
+            _viewModel.DestroyGallery();
 
             // Aassert
             _galleryManager.Received(0).WipeGallery(Arg.Any<ImageGallery>());
             _confirmationServiceMock.Received(0).Confirm(Arg.Any<string>());
-            _errorHandlerMock.Received(1).ShowError(Arg.Any<string>());
+            _errorHandlerMock.Received(1).ShowError(Arg.Any<Exception>());
         }
 
         [Fact]
@@ -173,7 +176,7 @@ namespace ImageManager.Tests
             _confirmationServiceMock.Confirm(Arg.Any<string>()).Returns(false);
 
             // Act
-            _viewModel.WipeGallery();
+            _viewModel.DestroyGallery();
 
             // Aassert
             _galleryManager.Received(0).WipeGallery(Arg.Any<ImageGallery>());
@@ -226,7 +229,7 @@ namespace ImageManager.Tests
         public void RemoveImage_ShouldNotSucceed_DueToGalleryNotLoaded()
         {
             // Arrange
-            _viewModel.GalleryLoaded = false;                        
+            _viewModel.GalleryLoaded = false;
 
             // Act
             _viewModel.RemoveImage();
@@ -234,7 +237,7 @@ namespace ImageManager.Tests
             // Assert
             _galleryManager.Received(0).RemoveImage(Arg.Any<ImageGallery>(), Arg.Any<int>());
             _confirmationServiceMock.Received(0).Confirm(Arg.Any<string>());
-            _errorHandlerMock.Received(1).ShowError(Arg.Any<string>());
+            _errorHandlerMock.Received(1).ShowError(Arg.Any<Exception>());
         }
 
         [Fact]
@@ -272,7 +275,7 @@ namespace ImageManager.Tests
             // Assert
             _newImageDataProvider.Received(0).GetImageInfo();
             _galleryManager.Received(0).AddImage(Arg.Any<ImageGallery>(), Arg.Any<NewImageInfo>());
-            _errorHandlerMock.Received(1).ShowError(Arg.Any<string>());
+            _errorHandlerMock.Received(1).ShowError(Arg.Any<Exception>());
         }
 
         [Fact]
